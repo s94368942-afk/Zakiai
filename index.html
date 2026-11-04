@@ -1,46 +1,195 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#073b2d"><meta name="description" content="ZAKI AI personal assistant">
-<link rel="manifest" href="./manifest.json"><title>ZAKI AI</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#06130e">
+<title>ZAKI AI</title>
 <style>
-:root{color-scheme:dark;--gold:#e6c46a}*{box-sizing:border-box}
-body{margin:0;background:radial-gradient(circle at top,#14523e,#061e19 55%);color:#f7f5ec;font:16px system-ui,sans-serif;min-height:100vh}
-header{padding:22px 18px 12px;display:flex;justify-content:space-between;max-width:850px;margin:auto}
-.logo{font-weight:800;letter-spacing:2px;color:var(--gold);font-size:24px}.status{font-size:12px;color:#b9d5c7;border:1px solid #356b55;border-radius:20px;padding:6px 10px}
-main{max-width:850px;margin:auto;padding:12px 16px 40px}.hero{padding:25px 20px;border:1px solid #386c55;border-radius:22px;background:linear-gradient(135deg,#104634,#0a2a22)}
-h1{font-size:30px;margin:0 0 7px}.gold{color:var(--gold)}p{color:#b7c9c1;line-height:1.5}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0}
-.tile,.chat{background:#0c3027;border:1px solid #285744;border-radius:16px;padding:16px}.tile{min-height:100px}
-.tile b{display:block;color:var(--gold);margin-bottom:6px}.tile span{font-size:13px;color:#b7c9c1}
-.messages{min-height:95px;max-height:260px;overflow:auto;padding:8px 0}.msg{padding:10px 12px;border-radius:13px;margin:7px 0;max-width:90%;white-space:pre-wrap}.bot{background:#174536}.user{background:#3d573e;margin-left:auto}
-form{display:flex;gap:8px;margin-top:12px}input{flex:1;min-width:0;background:#061e19;border:1px solid #47745d;border-radius:12px;padding:13px;color:white;font-size:16px}
-button{background:var(--gold);color:#18271e;border:0;border-radius:12px;padding:12px 15px;font-weight:700}.secondary{background:#174536;color:#f7f5ec;border:1px solid #47745d}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.note{font-size:12px;color:#a7bcb2;margin-top:15px}
-@media(min-width:650px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
-</style></head>
+*{box-sizing:border-box}
+body{margin:0;background:#06130e;color:#effff5;font-family:Arial,sans-serif}
+.app{max-width:650px;margin:auto;min-height:100vh;display:flex;flex-direction:column;background:radial-gradient(ellipse at top,#164b34,#06130e 60%)}
+header{display:flex;align-items:center;justify-content:space-between;padding:18px;border-bottom:1px solid #ffffff20}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:44px;height:44px;border-radius:15px;background:linear-gradient(135deg,#baffd2,#19a66c);display:grid;place-items:center;color:#062015;font-size:24px;font-weight:bold}
+h1{font-size:19px;letter-spacing:2px;margin:0}
+.sub{font-size:10px;color:#a0bcae;margin-top:5px}
+.status{font-size:11px;color:#65e9a0}
+.settings{background:#ffffff12;border:1px solid #ffffff30;color:white;padding:11px;border-radius:12px;font-size:18px}
+main{padding:18px;flex:1}
+.hero{text-align:center;padding:28px 0}
+.orb{height:115px;width:115px;border-radius:50%;margin:auto;display:grid;place-items:center;background:radial-gradient(circle,#55f4a7,#087345 60%,#09271a);box-shadow:0 0 40px #30db8955;animation:pulse 3s infinite}
+.orb span{font-size:45px}
+@keyframes pulse{50%{box-shadow:0 0 60px #30db8999}}
+.hero h2{margin:20px 0 7px;font-size:25px}
+.hero p{font-size:13px;color:#a0bcae}
+.quick{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.quick button{background:#10271c;color:#e4fff0;border:1px solid #315640;border-radius:14px;padding:15px;text-align:left;font-size:13px}
+.quick span{display:block;font-size:21px;margin-bottom:7px}
+.chat{display:flex;flex-direction:column;gap:12px;padding-bottom:20px}
+.msg{padding:13px 15px;border-radius:16px;max-width:88%;font-size:14px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}
+.bot{align-self:flex-start;background:#152d21;border:1px solid #31543d}
+.user{align-self:flex-end;background:#176c49}
+.inputarea{position:sticky;bottom:0;padding:13px 12px 20px;background:#07140ff2;border-top:1px solid #ffffff20}
+.inputrow{display:flex;gap:8px}
+input{min-width:0;flex:1;background:#14271d;border:1px solid #315640;border-radius:14px;padding:15px;color:white;font-size:14px}
+.send,.mic{border:0;border-radius:13px;padding:13px 16px;background:#50e39a;color:#062015;font-size:19px;font-weight:bold}
+.mic{background:#183c2b;color:#a1ffca;border:1px solid #376d4c}
+.hint{text-align:center;color:#789586;font-size:10px;margin-top:9px}
+.modal{display:none;position:fixed;inset:0;background:#000c;align-items:center;justify-content:center;padding:20px}
+.panel{background:#11251a;border:1px solid #477052;border-radius:20px;padding:20px;width:100%;max-width:400px}
+.panel input{width:100%;margin:12px 0}
+.panel p{font-size:12px;color:#a9c0b1;line-height:1.5}
+.actions{display:flex;gap:10px}
+.actions button{flex:1;padding:13px;border:0;border-radius:12px;background:#50e39a;font-weight:bold}
+.actions .close{background:#304337;color:white}
+</style>
+</head>
 <body>
-<header><div class="logo">✦ ZAKI AI</div><div class="status">PERSONAL ASSISTANT</div></header>
+<div class="app">
+<header>
+<div class="brand">
+<div class="logo">Z</div>
+<div><h1>ZAKI AI</h1><div class="sub">PERSONAL AI ASSISTANT</div></div>
+</div>
+<div style="display:flex;align-items:center;gap:10px">
+<span class="status">● READY</span>
+<button class="settings" onclick="openSettings()">⚙</button>
+</div>
+</header>
+
 <main>
-<section class="hero"><h1>Assalamu Alaikum</h1><p>Welcome to <strong class="gold">ZAKI AI</strong> — your personal assistant dashboard.</p><p>Mobile-ready starter app. Real AI connection is not configured yet.</p></section>
-<section class="grid">
-<div class="tile"><b>✧ AI Chat</b><span>Demo chat interface</span></div>
-<div class="tile"><b>🎙 Voice</b><span>Speech input and spoken replies where supported</span></div>
-<div class="tile"><b>▧ Image Studio</b><span>AI image service not connected</span></div>
-<div class="tile"><b>▶ Video Studio</b><span>AI video service not connected</span></div>
+<section class="hero">
+<div class="orb"><span>✦</span></div>
+<h2>Hello, I'm ZAKI</h2>
+<p>Your personal AI assistant. How can I help?</p>
 </section>
-<section class="chat"><h2>Talk to ZAKI</h2><div id="messages" class="messages" aria-live="polite"><div class="msg bot">Assalamu Alaikum! Main ZAKI AI demo hoon. Real AI connect hone ke baad main intelligent answers de paunga.</div></div>
-<form id="chatForm"><input id="prompt" placeholder="Type your message..." autocomplete="off" aria-label="Message"><button type="submit">Send</button></form>
-<div class="actions"><button class="secondary" id="voice">🎙 Speak</button><button class="secondary" id="speak">🔊 Read last reply</button></div>
-<p class="note">Demo mode: replies are local examples, not generated by a real AI model. Never enter passwords, OTPs, or private information here.</p>
-</section></main>
+
+<div class="quick">
+<button onclick="quick('Introduce yourself')"><span>✦</span>About ZAKI</button>
+<button onclick="quick('Help me plan my day')"><span>📋</span>Daily Tasks</button>
+<button onclick="quick('Tell me something interesting')"><span>🌍</span>Explore</button>
+<button onclick="quick('Give me a technology tip')"><span>💡</span>Tech Tips</button>
+</div>
+
+<div class="chat" id="chat">
+<div class="msg bot">Hello! I am ZAKI AI. Type a message or tap the microphone to talk.</div>
+</div>
+</main>
+
+<div class="inputarea">
+<div class="inputrow">
+<button class="mic" onclick="listen()">🎙</button>
+<input id="message" placeholder="Message ZAKI..." onkeydown="if(event.key==='Enter')sendMessage()">
+<button class="send" onclick="sendMessage()">➤</button>
+</div>
+<div class="hint">ZAKI AI • Personal Assistant</div>
+</div>
+</div>
+
+<div class="modal" id="settings">
+<div class="panel">
+<h3>⚙ AI Connection</h3>
+<p>Enter your secure HTTPS AI backend address. Never put a private API key in this app or public GitHub code.</p>
+<input id="endpoint" placeholder="https://your-server.com/api/chat">
+<div class="actions">
+<button class="close" onclick="closeSettings()">Close</button>
+<button onclick="saveSettings()">Save</button>
+</div>
+<p id="settingStatus"></p>
+</div>
+</div>
+
 <script>
-const messages=document.getElementById('messages'),input=document.getElementById('prompt');
-function add(text,who){const d=document.createElement('div');d.className='msg '+who;d.textContent=text;messages.appendChild(d);messages.scrollTop=messages.scrollHeight}
-let lastReply='Assalamu Alaikum! Main ZAKI AI demo hoon. Real AI abhi connect nahi hai.';
-document.getElementById('chatForm').addEventListener('submit',e=>{e.preventDefault();const q=input.value.trim();if(!q)return;add(q,'user');input.value='';lastReply='Main abhi demo mode mein hoon. Real AI conversation ke liye secure AI service connect karni hogi.';add(lastReply,'bot')});
-document.getElementById('voice').onclick=()=>{const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){add('Is browser mein speech recognition available nahi hai.','bot');return}const rec=new SR();rec.lang='en-IN';rec.onresult=e=>{input.value=e.results[0][0].transcript};rec.onerror=()=>add('Voice input abhi available nahi hai.','bot');rec.start()};
-document.getElementById('speak').onclick=()=>{if(!('speechSynthesis'in window)){add('Speech output supported nahi hai.','bot');return}speechSynthesis.speak(new SpeechSynthesisUtterance(lastReply))};
-if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
-</script></body></html>
+const chat=document.getElementById("chat");
+const message=document.getElementById("message");
+
+function addMessage(text,type){
+const div=document.createElement("div");
+div.className="msg "+type;
+div.textContent=text;
+chat.appendChild(div);
+div.scrollIntoView({behavior:"smooth",block:"end"});
+}
+
+function quick(text){
+message.value=text;
+sendMessage();
+}
+
+function openSettings(){
+document.getElementById("settings").style.display="flex";
+document.getElementById("endpoint").value=localStorage.getItem("zaki_endpoint")||"";
+}
+function closeSettings(){
+document.getElementById("settings").style.display="none";
+}
+function saveSettings(){
+const url=document.getElementById("endpoint").value.trim();
+if(url && !url.startsWith("https://")){
+document.getElementById("settingStatus").textContent="Please enter a secure HTTPS address.";
+return;
+}
+localStorage.setItem("zaki_endpoint",url);
+document.getElementById("settingStatus").textContent="Address saved!";
+}
+
+async function sendMessage(){
+const text=message.value.trim();
+if(!text)return;
+message.value="";
+addMessage(text,"user");
+
+const endpoint=localStorage.getItem("zaki_endpoint");
+if(!endpoint){
+addMessage("ZAKI is currently in demo mode. Open Settings ⚙ to connect a secure AI backend. Real AI is not connected yet.","bot");
+return;
+}
+
+const loading=document.createElement("div");
+loading.className="msg bot";
+loading.textContent="ZAKI is thinking...";
+chat.appendChild(loading);
+
+try{
+const response=await fetch(endpoint,{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({message:text,history:[]})
+});
+if(!response.ok)throw new Error("Server error "+response.status);
+const data=await response.json();
+loading.textContent=data.reply||"No reply received.";
+speak(data.reply||"No reply received.");
+}catch(error){
+loading.textContent="Connection failed. Please check your backend address and try again.";
+}
+}
+
+function listen(){
+const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
+if(!SpeechRecognition){
+addMessage("Voice recognition is not supported in this browser. Try Chrome.","bot");
+return;
+}
+const recognition=new SpeechRecognition();
+recognition.lang="en-IN";
+recognition.onresult=(event)=>{
+message.value=event.results[0][0].transcript;
+sendMessage();
+};
+recognition.onerror=()=>addMessage("Voice input could not start. Please try again.","bot");
+recognition.start();
+}
+
+function speak(text){
+if(!text||!("speechSynthesis" in window))return;
+speechSynthesis.cancel();
+const utterance=new SpeechSynthesisUtterance(text);
+utterance.lang="en-IN";
+speechSynthesis.speak(utterance);
+}
+</script>
+</body>
+</html>
